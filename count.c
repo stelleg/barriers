@@ -35,18 +35,19 @@ void countBarrier(threadbarrier_t* tb){
 }
 
 barrier_t allocBarrier(uint64_t nthreads, uint64_t ncores){
-  threadbarrier_t* tbs = aligned_alloc(nthreads * sizeof(threadbarrier_t), 64);
-  corebarrier_t* cbs = aligned_alloc(ncores * sizeof(corebarrier_t), 64);
+  threadbarrier_t* tbs = malloc(nthreads * sizeof(threadbarrier_t));
+  corebarrier_t* cbs = malloc(ncores * sizeof(corebarrier_t));
   return (barrier_t){cbs, tbs};
 }
 
 void initBarrier(corebarrier_t* cbs, threadbarrier_t* tbs, uint64_t cid, uint64_t tid, uint32_t threadspercore){
   threadbarrier_t mytb = (threadbarrier_t){1, threadspercore, cbs + cid};
+  cbs[cid].arrive = 0;
+  cbs[cid].depart = 0;
   tbs[tid] = mytb;
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
   if(argc != 3) {
     printf("usage: ./barrier <ncores> <niters>\n");
     exit(-1);
@@ -60,14 +61,14 @@ int main(int argc, char* argv[])
     assert(nthreads % ncores == 0);
     int tid = omp_get_thread_num();
     int threadspercore = nthreads/ncores;
-    int cid = tid / threadspercore;
+    int cid = tid/threadspercore;
     if(tid==0) b = allocBarrier(nthreads, ncores);
     #pragma omp barrier
+    printf("thread %d/%d has core %d/%d\n", tid, nthreads, cid, ncores);
     initBarrier(b.cbs, b.tbs, cid, tid, threadspercore);  
     #pragma omp barrier
     for(int i=0; i<iters; i++)
       countBarrier(b.tbs + tid);
-    #pragma omp barrier
   }
   free(b.tbs);
   free(b.cbs);
