@@ -1,5 +1,5 @@
 cc=gcc
-cflags=-g -Wall -O2 -fopenmp 
+cflags=-g -Wall -O2 -fopenmp -std=c99
 bins=count barrier omp
 
 all: ${bins} 
