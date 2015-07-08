@@ -8,13 +8,13 @@
 #ifndef __rdtsc
 static inline uint64_t __rdtsc(){
   uint64_t rdtsc;
-  asm volatile ("rdtsc" : "=A" (rdtsc));
+  __asm__ volatile ("rdtsc" : "=A" (rdtsc));
   return rdtsc;
 }
 #endif
 
 static inline void cpu_pause(){
-  asm ("pause");
+  __asm__ ("pause");
 }
 
 typedef struct corebarrier_t{

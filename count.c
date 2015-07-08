@@ -5,7 +5,7 @@
 #include <omp.h>
 
 static inline void cpu_pause(){
-  asm ("pause");
+  __asm__ ("pause");
 }
 
 typedef struct corebarrier_s{
