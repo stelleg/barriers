@@ -64,7 +64,6 @@ int main(int argc, char* argv[]){
     int cid = tid/threadspercore;
     if(tid==0) b = allocBarrier(nthreads, ncores);
     #pragma omp barrier
-    printf("thread %d/%d has core %d/%d\n", tid, nthreads, cid, ncores);
     initBarrier(b.cbs, b.tbs, cid, tid, threadspercore);  
     #pragma omp barrier
     for(int i=0; i<iters; i++)

@@ -1,10 +1,11 @@
-all: count barrier omp
+cc=gcc
+cflags=-g -Wall -O2 -fopenmp 
+bins=count barrier omp
 
-omp: omp.c
-	gcc omp.c -g -Wall -O2 -fopenmp -o omp
+all: ${bins} 
 
-count: count.c
-	gcc count.c -g -Wall -O2 -fopenmp -o count
+%:%.c
+	${cc} ${cflags} -o $@ $<
 
-barrier: barrier.c
-	gcc barrier.c -g -Wall -O2 -fopenmp -o barrier 
+clean:
+	rm -f ${bins}
