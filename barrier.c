@@ -68,8 +68,8 @@ barrier_t init_barrier(size_t ncores){
       printf("nthreads = %d, ncores = %ld\n", nthreads, ncores);
       assert(nthreads % ncores == 0);
       assert(tperc <= 8);
-      barriers = (threadbarrier_t*) aligned_alloc(nthreads * sizeof(threadbarrier_t), 64);
-      corebarriers = (corebarrier_t*) aligned_alloc(ncores * sizeof(corebarrier_t), 64);
+      barriers = (threadbarrier_t*) malloc(nthreads * sizeof(threadbarrier_t));
+      corebarriers = (corebarrier_t*) malloc(ncores * sizeof(corebarrier_t));
     }
     #pragma omp barrier
 
