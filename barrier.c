@@ -38,7 +38,7 @@ typedef struct barrier_t{
 void byteBarrier(threadbarrier_t* bar){
   int mysense = bar->usersense;
   int coretid = bar->mycoretid;
-  int mycoresense = mysense ? bar->coreval : 0;
+  uint64_t mycoresense = mysense ? bar->coreval : 0;
   corebarrier_t *me = bar->me;
 
   // signal my arrival
@@ -89,8 +89,11 @@ barrier_t init_barrier(size_t ncores){
     bar.usersense = 1;
     bar.mycoretid = lid;
     bar.coreval = 0;
-    for(int i=0; i<tperc; i++)
-      bar.coreval |= 0x1 << 8*i;
+    for(int i=0; i<tperc; i++){
+      bar.coreval |= (uint64_t)0x1 << (uint64_t)8*(uint64_t)i;
+      printf("%lx\n", bar.coreval);
+    }
+
     bar.me = me;
     barriers[gid] = bar;
   #pragma omp barrier
